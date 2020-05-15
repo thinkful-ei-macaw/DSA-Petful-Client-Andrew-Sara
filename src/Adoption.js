@@ -9,7 +9,8 @@ class Adoption extends Component {
     typeOfPet: 'dog',
     dog: {},
     cat: {},
-    people: []
+    people: [],
+    first: false,
   }
 
   componentDidMount() {
@@ -26,7 +27,6 @@ class Adoption extends Component {
       })
     })
   
-
     fetch(`${config.API_ENDPOINT}/dog`)
       .then((dog) => ((!dog.ok)
           ? dog.json().then((e) => Promise.reject(e))
@@ -36,7 +36,6 @@ class Adoption extends Component {
           dog: dog
         }) 
       })
-    
     
     fetch(`${config.API_ENDPOINT}/cat`)
     .then(cat => {
@@ -59,12 +58,19 @@ class Adoption extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: name,
+        person: name,
       })
     })
-
+    .then((res) => ((!res.ok)
+    ? res.json().then((e) => Promise.reject(e))
+    : res.json()))
+    .then(people => {
+      this.setState({
+        people: people
+      })
+    })
   }
-
+    
   handleSubmit = e => {
     e.preventDefault();
     let type = e.target['pet-type'].value
@@ -73,6 +79,34 @@ class Adoption extends Component {
     this.setState({
       typeOfPet: type
     })
+    // repeat with the interval of 2 seconds
+  let timerId = setInterval(() => 
+    this.handleTimerFuncs() , 5000)
+  // after 5 seconds stop
+  setTimeout(() => { clearInterval(timerId); }, 25000);
+    
+  }
+
+  handleTimerFuncs = () => {
+    if (this.state.people.length > 1) {
+      fetch(`${config.API_ENDPOINT}/people`, {
+        method: 'DELETE', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: this.state.people[0],
+        })
+      })
+    }
+    else {
+      this.setState({
+        first: true
+      })
+
+    }
+
+
   }
 
   renderPeople = () => {
@@ -110,33 +144,56 @@ class Adoption extends Component {
     </section>
   }
 
-  render() {
+  handleAdopt = () => {
+    let pet = this.state.typeOfPet
 
+    fetch(`${config.API_ENDPOINT}/people`, {
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.state.people[0],
+      })
+    })
+
+    fetch(`${config.API_ENDPOINT}/${pet}`, {
+      method: 'DELETE', 
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+  }
+
+  render() {
   return <div>
     <header>
       <h1>Adoption</h1>
     </header>
     
     <main>
-      <h3>PET ON STAGE</h3>
       <section>
-      {this.state.typeOfPet === 'dog' ? this.renderDog() : this.renderCat()}
-      <h3>PEOPLE IN QUEUE</h3>
-      {this.renderPeople()}
-  </section>
+      <h3>PET ON STAGE</h3>
+        {this.state.typeOfPet === 'dog' ? this.renderDog() : this.renderCat()}
+        <h3>PEOPLE IN QUEUE</h3>
+        {this.renderPeople()}
+      </section>  
 
       <section id="form">
         <form onSubmit={this.handleSubmit} name="addNameToList" id="addNameToList">
-        <label htmlFor="pet-type">What type of pet would you like to adopt?</label>
-        <select name="pet-type">
-            <option>-select your pet-</option>
-            <option>dog</option>
-            <option>cat</option>
+          <label htmlFor="pet-type">What type of pet would you like to adopt?</label>
+          <select name="pet-type">
+              <option>-select your pet-</option>
+              <option>dog</option>
+              <option>cat</option>
           </select>
           <label htmlFor="addName">Your Name:</label>
-          <input type="text" name="addName" id="addName"></input>
+            <input type="text" name="addName" id="addName"></input>
           <button type="submit">ADD ME TO THE QUEUE</button>
-          <button type="submit">ADOPT THAT PET!</button>
+          {this.state.first ? 
+            <button onClick={this.handleAdopt} 
+              type="button">ADOPT THAT PET!</button> 
+          : ''}
         </form>
       </section>
     </main>
