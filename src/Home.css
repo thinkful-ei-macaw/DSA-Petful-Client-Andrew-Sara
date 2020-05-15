@@ -1,0 +1,39 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: auto
+}
+
+h1 {
+    color: black;
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 100px;
+}
+
+.description {
+    margin-left: 250px;
+    margin-right: 250px;
+    margin-bottom: 100px;
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-end;
+}
+
+.button {
+    text-align: center;
+    margin: 25px;
+}
+
+button {
+    text-align: center;
+    font-size: 24px;
+    border-radius: 15%;
+    padding: 15px;
+}
