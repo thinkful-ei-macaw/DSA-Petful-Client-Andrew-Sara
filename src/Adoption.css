@@ -44,3 +44,8 @@ button {
   border-radius: 15%;
   padding: 15px;
 }
+
+img {
+  height: 400px;
+  width: 500px;
+}
