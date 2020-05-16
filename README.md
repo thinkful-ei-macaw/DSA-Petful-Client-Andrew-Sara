@@ -1,5 +1,7 @@
 # Petful Client
 
+Written by Andrew Burchett and Sara Mills
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
