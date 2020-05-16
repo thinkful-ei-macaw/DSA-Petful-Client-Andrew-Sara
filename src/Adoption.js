@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import config from "./config";
 import "./Adoption.css";
 import People from "./People";
+import Api from './Api'
 
 class Adoption extends Component {
   state = {
@@ -14,36 +14,22 @@ class Adoption extends Component {
   };
 
   componentDidMount() {
-    fetch(`${config.API_ENDPOINT}/people`)
-      .then((person) => {
-        if (!person.ok) {
-          return person.json().then((e) => Promise.reject(e));
-        }
-        return person.json();
-      })
+
+    Api.getPeople()
       .then((person) => {
         this.setState({
           people: person,
         });
       });
 
-    fetch(`${config.API_ENDPOINT}/dog`)
-      .then((dog) =>
-        !dog.ok ? dog.json().then((e) => Promise.reject(e)) : dog.json()
-      )
+    Api.getDog()
       .then((dog) => {
         this.setState({
           dog: dog,
         });
       });
 
-    fetch(`${config.API_ENDPOINT}/cat`)
-      .then((cat) => {
-        if (!cat.ok) {
-          return cat.json().then((e) => Promise.reject(e));
-        }
-        return cat.json();
-      })
+    Api.getCat()
       .then((cat) => {
         this.setState({
           cat: cat,
@@ -52,18 +38,7 @@ class Adoption extends Component {
   }
 
   postUser = (name) => {
-    fetch(`${config.API_ENDPOINT}/people`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        person: name,
-      }),
-    })
-      .then((res) =>
-        !res.ok ? res.json().then((e) => Promise.reject(e)) : res.json()
-      )
+    Api.addPerson(name)
       .then((people) => {
         this.setState({
           people: people,
@@ -71,78 +46,20 @@ class Adoption extends Component {
       });
   };
 
-  // handleSubmit = e => {
-  //   e.preventDefault();
-  //   let type = e.target['pet-type'].value
-  //   let user = e.target['addName'].value
-  //   this.postUser(user)
-  //   this.setState({
-  //     typeOfPet: type
-  //   })
-  //   // repeat with the interval
-  // let timerId = setInterval(() =>
-  //   this.handleTimerFuncs(), 1000)
-  // //  stop
-  // let timeout = this.state.people.length -1 * 1000
-  // setTimeout(() => { clearInterval(timerId); }, timeout);
-
-  // }
-
-  // handleTimerFuncs = () => {
-  //   let newPeople = ['Karen Whosyerboss', 'Jim Lahey', 'Linda Pierogie', 'Madeline McCain']
-  //   if (this.state.people.length > 1) {
-  //     fetch(`${config.API_ENDPOINT}/people`, {
-  //       method: 'DELETE',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         name: this.state.people[0],
-  //       })
-  //     })
-  //     .then((res) => ((!res.ok)
-  //     ? res.json().then((e) => Promise.reject(e))
-  //     : res.json()))
-  //     .then(people => {
-  //       this.setState({
-  //         people: people
-  //       })
-  //     })
-  //     console.log(this.state.people)
-  //   }
-  //   else {
-  //     this.setState({
-  //       first: true
-  //     })
-
-  //     let i = 0;
-  //     let limit = newPeople.length - 1;
-  //     let interval = setInterval(() => {
-  //       if (i > limit) {
-  //         clearInterval(interval);
-  //       }
-  //       this.postUser(newPeople[i]);
-  //       i++;
-  //     }, 1000);
-  //   }
-  // }
   handleSubmit = (e) => {
     e.preventDefault();
     let type = e.target["pet-type"].value;
     let user = e.target["addName"].value;
     this.postUser(user);
 
-    // repeat with the interval of 2 seconds
     let removeTimer = setInterval(() => {
-      console.log("removeTimer call");
       this.handleTimerFuncs();
     }, 1000);
 
     this.setState({
       typeOfPet: type,
-      removeTimer
+      removeTimer,
     });
-
   };
 
   handleTimerFuncs = () => {
@@ -152,22 +69,24 @@ class Adoption extends Component {
       "Linda Pierogie",
       "Madeline McCain",
     ];
+
     if (this.state.people.length > 1) {
-      fetch(`${config.API_ENDPOINT}/people`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: this.state.people[0],
-        }),
-      })
-        .then((res) =>
-          !res.ok ? res.json().then((e) => Promise.reject(e)) : res.json()
-        )
+      Api.deletePerson(this.state.people[0])
         .then((people) => {
           this.setState({
-            people: people,
+            people,
+          });
+        });
+      Api.deleteDog()
+        .then((dog) => {
+          this.setState({
+            dog: dog,
+          });
+        });
+      Api.deleteCat()
+        .then((cat) => {
+          this.setState({
+            cat: cat,
           });
         });
     } else {
@@ -175,18 +94,14 @@ class Adoption extends Component {
         first: true,
       });
 
-      clearInterval(this.state.removeTimer)
+      clearInterval(this.state.removeTimer);
       let i = 0;
-      // let limit = newPeople.length - 1;
       let addInterval = setInterval(() => {
-        console.log("interval call");
-        
         this.postUser(newPeople[i]);
         i++;
       }, 1000);
 
       setTimeout(() => {
-        console.log("interval clear");
         clearInterval(addInterval);
       }, 4000);
     }
@@ -235,24 +150,28 @@ class Adoption extends Component {
   };
 
   handleAdopt = () => {
-    let pet = this.state.typeOfPet;
-
-    fetch(`${config.API_ENDPOINT}/people`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: this.state.people[0],
-      }),
-    });
-
-    fetch(`${config.API_ENDPOINT}/${pet}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    Api.deletePerson(this.state.people[0])
+      .then((people) => {
+        this.setState({
+          people,
+          first: false,
+        });
+      });
+    if (this.state.typeOfPet === 'dog') {
+      Api.deleteDog()
+        .then((dog) => {
+          this.setState({
+            dog: dog,
+          });
+        });
+    } else {
+      Api.deleteCat()
+      .then((cat) => {
+        this.setState({
+          cat: cat,
+        });
+      });
+    }
   };
 
   render() {
