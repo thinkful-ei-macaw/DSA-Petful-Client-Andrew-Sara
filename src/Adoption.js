@@ -40,8 +40,9 @@ class Adoption extends Component {
   postUser = (name) => {
     Api.addPerson(name)
       .then((people) => {
+        console.log('hello')
         this.setState({
-          people: people,
+          people
         });
       });
   };
@@ -54,7 +55,7 @@ class Adoption extends Component {
 
     let removeTimer = setInterval(() => {
       this.handleTimerFuncs();
-    }, 1000);
+    }, 5000);
 
     this.setState({
       typeOfPet: type,
@@ -90,20 +91,21 @@ class Adoption extends Component {
           });
         });
     } else {
-      this.setState({
-        first: true,
-      });
 
       clearInterval(this.state.removeTimer);
       let i = 0;
       let addInterval = setInterval(() => {
         this.postUser(newPeople[i]);
         i++;
-      }, 1000);
+      }, 5000);
+
+      this.setState({
+        first: true,
+      });
 
       setTimeout(() => {
         clearInterval(addInterval);
-      }, 4000);
+      }, 20000);
     }
   };
 
@@ -172,6 +174,7 @@ class Adoption extends Component {
         });
       });
     }
+    alert(`Congrats, on your new pet ${this.state.typeOfPet}!!`)
   };
 
   render() {
@@ -200,7 +203,7 @@ class Adoption extends Component {
               <label htmlFor="pet-type">
                 What type of pet would you like to adopt?
               </label>
-              <select name="pet-type">
+              <select name="pet-type" defaultValue="dog">
                 <option>-select your pet-</option>
                 <option>dog</option>
                 <option>cat</option>
