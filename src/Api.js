@@ -2,7 +2,7 @@ import config from './config'
 
 const Api = {
   getDog() {
-    return fetch(`${config.API_ENDPOINT}/dog`, {
+    return fetch(`${config.REACT_APP_API_BASE}/dog`, {
       method: "DELETE",
     })
       .then((dog) => {
@@ -14,7 +14,7 @@ const Api = {
 },
 
   getCat() {
-    return fetch(`${config.API_ENDPOINT}/cat`)
+    return fetch(`${config.REACT_APP_API_BASE}/cat`)
     .then((cat) => {
       if (!cat.ok) {
         throw new Error('no cats here')
@@ -25,7 +25,7 @@ const Api = {
 
 
   getPeople() {
-      return fetch(`${config.API_ENDPOINT}/people`, {
+    return fetch(`${config.REACT_APP_API_BASE}/people`, {
         method: "DELETE",
       })
         .then((people) => {
@@ -37,7 +37,7 @@ const Api = {
 },
 
   addPerson(name) {
-    return fetch(`${config.API_ENDPOINT}/people`, {
+    return fetch(`${config.REACT_APP_API_BASE}/people`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,10 +49,10 @@ const Api = {
       .then((res) =>
         !res.ok ? res.json().then((e) => Promise.reject(e)) : res.json()
       )
-},
+  },
 
   deleteDog() {
-    return fetch(`${config.API_ENDPOINT}/dog`, {
+    return fetch(`${config.REACT_APP_API_BASE}/dog`, {
       method: "DELETE",
     })
       .then((res) =>
@@ -61,7 +61,7 @@ const Api = {
 },
 
   deleteCat() {
-    return fetch(`${config.API_ENDPOINT}/cat`, {
+    return fetch(`${config.REACT_APP_API_BASE}/cat`, {
       method: "DELETE",
     })
       .then((res) =>
@@ -70,7 +70,7 @@ const Api = {
 },
 
   deletePerson(person) {
-    return fetch(`${config.API_ENDPOINT}/people`, {
+    return fetch(`${config.REACT_APP_API_BASE}/people`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
