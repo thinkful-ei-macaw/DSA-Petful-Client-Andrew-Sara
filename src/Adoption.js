@@ -40,7 +40,6 @@ class Adoption extends Component {
   postUser = (name) => {
     Api.addPerson(name)
       .then((people) => {
-        console.log('hello')
         this.setState({
           people
         });
@@ -66,7 +65,6 @@ class Adoption extends Component {
   handleTimerFuncs = () => {
     let newPeople = [
       "Karen Whosyerboss",
-      "Jim Lahey",
       "Linda Pierogie",
       "Madeline McCain",
     ];
@@ -98,10 +96,12 @@ class Adoption extends Component {
         this.postUser(newPeople[i]);
         i++;
       }, 5000);
+      this.postUser("Charles Barclay")
 
       this.setState({
-        first: true,
-      });
+        first: true
+      })
+
 
       setTimeout(() => {
         clearInterval(addInterval);
