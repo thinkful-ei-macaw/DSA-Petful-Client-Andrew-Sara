@@ -2,9 +2,7 @@ import config from './config'
 
 const Api = {
   getDog() {
-    return fetch(`${config.REACT_APP_API_BASE}/dog`, {
-      method: "DELETE",
-    })
+    return fetch(`${config.REACT_APP_API_BASE}/dog`)
       .then((dog) => {
       if (!dog.ok) {
         throw new Error('no dogs here')
@@ -15,25 +13,22 @@ const Api = {
 
   getCat() {
     return fetch(`${config.REACT_APP_API_BASE}/cat`)
-    .then((cat) => {
-      if (!cat.ok) {
-        throw new Error('no cats here')
-      }
-      return cat.json();
-    })
+      .then((cat) => {
+        if (!cat.ok) {
+          throw new Error('no cats here')
+        }
+        return cat.json();
+      })
 },
 
-
   getPeople() {
-    return fetch(`${config.REACT_APP_API_BASE}/people`, {
-        method: "DELETE",
-      })
-        .then((people) => {
-        if (!people.ok) {
-          throw new Error('no peoples here')
-        }
-        return people.json();
-      })
+    return fetch(`${config.REACT_APP_API_BASE}/people`)
+      .then((people) => {
+      if (!people.ok) {
+        throw new Error('no peoples here')
+      }
+      return people.json();
+    })
 },
 
   addPerson(name) {
